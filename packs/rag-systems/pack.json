@@ -1,0 +1,17 @@
+{
+  "id": "rag-systems",
+  "title": "大模型 RAG（检索增强生成）系统设计",
+  "description": "由 universal-tutor 建包流水线现场生成（逐节点深挖+质检+查漏），用于演示『不敷衍』的生成质量。",
+  "learner_profile": "产品经理，懂大模型基础，目标是能做 RAG 系统的架构取舍、敢跟研发对线，不是会写代码。",
+  "goal": "能对 RAG 每个环节做架构级判断、说清取舍、对标业界做法。",
+  "target_depth": "每个概念能讲清是什么/为解决什么/核心取舍，接得住连环追问，对标业界能说出≥1个具体差异点。",
+  "assessment_styles": [
+    "concept",
+    "drill",
+    "transfer",
+    "scenario"
+  ],
+  "socratic_orientation": "提问母题拉向产品判断：要不要做、暴露不暴露、取舍的轴、业界为何不同、凭什么判断研发说得对不对。",
+  "grounding": true,
+  "created": "2026-06-19"
+}

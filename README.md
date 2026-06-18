@@ -35,12 +35,15 @@ universal-tutor/
 │   └── logging_protocol.md        #   启动校准 + 实时落盘（多包命名空间）
 │   └── pack_authoring_protocol.md #   现场建一门新课的流水线
 └── packs/                         # 可插拔学习卡带（每门课一个目录）
-    └── training-infra/            #   内置：大模型训推 + 算力调度（27 节点，零损失迁移自原版）
-        ├── pack.json              #     元数据：学习者画像/目标/评估风格/对标开关
-        ├── curriculum.json        #     节点图：依赖 + 目标 + Bloom + 苏格拉底种子 + 对标锚点
-        └── grounding.md           #     本课对标锚点清单
+    ├── training-infra/           #   内置课①：大模型训推 + 算力调度（27 节点，每节点≥2 种子）
+    │   ├── pack.json             #     元数据：学习者画像/目标/评估风格/对标开关
+    │   ├── curriculum.json       #     节点图：依赖 + 目标 + Bloom + 苏格拉底种子 + 对标锚点
+    │   └── grounding.md          #     本课对标锚点清单
+    └── rag-systems/              #   内置课②：RAG 系统设计（53 节点，建包流水线现场生成的范例）
    （运行后自动生成：state/<课程>/ 进度与误概念、logs/<课程>/ 每日日志）
 ```
+
+> `rag-systems` 是用 `pack_authoring_protocol` 的「逐节点深挖」流水线**现场生成**的：53 节点、每个 objective ~640 字、引用经联网抽样核实全部真实——既是一门可学的课，也是「生成不敷衍」的活样本。对比一次性生成同领域只得 19 个一句话节点。
 
 ## 安装
 
