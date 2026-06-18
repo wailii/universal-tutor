@@ -1,0 +1,15 @@
+{
+  "name": "universal-tutor-mkt",
+  "owner": { "name": "<在这里填你的名字或 GitHub 用户名>" },
+  "metadata": {
+    "description": "通用学习导师插件市场（单插件）",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "universal-tutor",
+      "source": "./",
+      "description": "通用苏格拉底式·热插拔多学科学习导师。"
+    }
+  ]
+}

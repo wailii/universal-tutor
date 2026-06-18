@@ -1,0 +1,284 @@
+{
+  "pack": "training-infra",
+  "schema": "1.0",
+  "nodes": [
+    {
+      "id": "TRN-01", "track": "training", "bloom": "analyze",
+      "title": "训推平台全景：从训练到上线的链路、平台为何存在",
+      "deps": [],
+      "objective": "能用一句话说清平台为何存在（把「数据→训练→推理」这条只有专家能跑通的链路标准化、降门槛），并画出主链路。",
+      "socratic_seeds": [
+        "不存在这个平台，算法工程师每天会卡在哪？平台到底替他们消灭了什么成本？",
+        "这条链路里，哪一段最难标准化，为什么？"
+      ],
+      "grounding_anchors": ["任一国内云厂商训推平台的产品架构图"]
+    },
+    {
+      "id": "TRN-02", "track": "training", "bloom": "analyze",
+      "title": "GPU 与算力基础：显存/算力(FLOPS,MFU)/卡型/互联(NVLink,IB,RoCE)",
+      "deps": ["TRN-01"],
+      "objective": "看懂显存/算力(FLOPS,MFU)/卡型(A100/H100/H800/昇腾910B)/互联(NVLink/IB/RoCE)，知道哪个指标卡哪类瓶颈。",
+      "socratic_seeds": [
+        "训练一个模型，到底是显存不够、算力不够、还是卡间通信不够先成为瓶颈？怎么判断？",
+        "MFU 低到底说明硬件不行还是用法不行？"
+      ],
+      "grounding_anchors": ["H100 vs A100 关键规格", "昇腾 910B 的对位"]
+    },
+    {
+      "id": "TRN-03", "track": "training", "bloom": "understand",
+      "title": "容器与镜像：Docker、镜像管理、环境可复现",
+      "deps": ["TRN-01"],
+      "objective": "理解为什么「环境可复现」是研究员最痛的点，镜像在平台里扮演什么角色。",
+      "socratic_seeds": [
+        "同一份代码换台机器结果不一样，问题可能出在哪几层？平台怎么把这个坑填掉？"
+      ],
+      "grounding_anchors": ["各平台的基础镜像/自定义镜像管理做法"]
+    },
+    {
+      "id": "TRN-04", "track": "training", "bloom": "analyze",
+      "title": "分布式训练并行：DP/TP/PP/SP，何时用哪种、对平台意味着什么",
+      "deps": ["TRN-02"],
+      "objective": "说清 DP/TP/PP/SP 各自切什么、何时用哪种组合，以及对平台（调度、网络、存储）提出什么要求。",
+      "socratic_seeds": [
+        "模型大到单卡放不下时，先上哪种并行？为什么不是无脑全开？",
+        "切分方式怎么反过来约束调度？"
+      ],
+      "grounding_anchors": ["Megatron-LM 的并行设计", "千亿模型的典型并行配置"]
+    },
+    {
+      "id": "TRN-05", "track": "training", "bloom": "evaluate",
+      "title": "训练框架与生态：Megatron-LM/DeepSpeed/PyTorch FSDP/Ray",
+      "deps": ["TRN-04"],
+      "objective": "知道 Megatron-LM/DeepSpeed/FSDP/Ray 各自解决什么、平台该不该绑定某一个。",
+      "socratic_seeds": [
+        "平台要不要替用户选框架？统一收敛 vs 让用户自带，产品上各有什么代价？"
+      ],
+      "grounding_anchors": ["DeepSpeed ZeRO 系列在省什么", "FSDP 的定位"]
+    },
+    {
+      "id": "TRN-06", "track": "training", "bloom": "analyze",
+      "title": "训练任务全生命周期：提交→排队→运行→checkpoint→断点续训→重试",
+      "deps": ["TRN-03", "TRN-04"],
+      "objective": "讲清提交→排队→运行→checkpoint→断点续训→失败重试整条链，以及每个环节的用户痛点。",
+      "socratic_seeds": [
+        "一个训练任务跑到一半挂了，平台理想情况下该自动做什么？",
+        "checkpoint 频率高低各有什么代价？"
+      ],
+      "grounding_anchors": ["各平台的断点续训/容错产品化程度"]
+    },
+    {
+      "id": "TRN-07", "track": "training", "bloom": "analyze",
+      "title": "训练可观测性：loss/梯度/显存/吞吐/MFU、故障定位",
+      "deps": ["TRN-06"],
+      "objective": "知道 loss/梯度/显存/吞吐(tokens/s)/MFU 各看什么，故障怎么定位。",
+      "socratic_seeds": [
+        "用户反复问「我的任务到底跑起来没、到哪了」——平台该暴露哪几个指标就能消灭大部分这类问题？"
+      ],
+      "grounding_anchors": ["业界训练监控面板暴露的核心指标"]
+    },
+    {
+      "id": "TRN-08", "track": "training", "bloom": "analyze",
+      "title": "数据集与资产管理：数据集版本、model registry、镜像仓库、血缘",
+      "deps": ["TRN-03"],
+      "objective": "理解数据集版本/model registry/镜像仓库/血缘为什么是平台的地基。",
+      "socratic_seeds": [
+        "模型、数据、镜像散在各团队手里会出什么乱子？「血缘可追溯」在产品上换来什么？"
+      ],
+      "grounding_anchors": ["MLflow / 各平台的资产与血缘管理"]
+    },
+    {
+      "id": "TRN-09", "track": "training", "bloom": "analyze",
+      "title": "推理服务基础：在线/离线、服务化、TTFT/TPOT/QPS、SLA",
+      "deps": ["TRN-01"],
+      "objective": "分清在线/离线推理，看懂 TTFT/TPOT/QPS/SLA，理解延迟与吞吐的对立。",
+      "socratic_seeds": [
+        "同一个模型服务，要低延迟还是高吞吐？为什么常常不可兼得？PM 怎么帮用户表达这个取舍？"
+      ],
+      "grounding_anchors": ["在线推理服务的 SLA 指标定义"]
+    },
+    {
+      "id": "TRN-10", "track": "training", "bloom": "evaluate",
+      "title": "推理引擎：vLLM/SGLang/TensorRT-LLM/TGI 及差异",
+      "deps": ["TRN-09"],
+      "objective": "说出 vLLM/SGLang/TensorRT-LLM/TGI 的定位差异，平台选型该看什么。",
+      "socratic_seeds": [
+        "为什么 vLLM 能比朴素实现吞吐高一截？",
+        "平台要不要让用户换引擎，还是封装掉？"
+      ],
+      "grounding_anchors": ["vLLM（PagedAttention 论文）", "SGLang", "TensorRT-LLM 的差异"]
+    },
+    {
+      "id": "TRN-11", "track": "training", "bloom": "analyze",
+      "title": "推理优化：PagedAttention/continuous batching/量化/投机解码/PD分离",
+      "deps": ["TRN-10"],
+      "objective": "理解 PagedAttention/continuous batching/量化/投机解码/PD 分离各省什么、代价是什么。",
+      "socratic_seeds": [
+        "continuous batching 为什么能提利用率？",
+        "PD 分离是在解决什么矛盾，它对调度提了什么新要求？"
+      ],
+      "grounding_anchors": ["PagedAttention 论文", "PD 分离的工业实践"]
+    },
+    {
+      "id": "TRN-12", "track": "training", "bloom": "evaluate",
+      "title": "平台化与多租户：配额、计费、权限、隔离、SLA 保障",
+      "deps": ["TRN-06", "TRN-09"],
+      "objective": "讲清配额/计费/权限/隔离/SLA 在多团队共用一套算力时怎么设计。",
+      "socratic_seeds": [
+        "多个团队抢同一批卡，平台靠什么保证公平又不浪费？",
+        "计费该按申请量还是实际用量？"
+      ],
+      "grounding_anchors": ["各云厂商的多租户与配额产品设计"]
+    },
+    {
+      "id": "TRN-13", "track": "training", "bloom": "evaluate",
+      "title": "业界对标(训推)：PAI+灵骏/ModelArts/百度百舸/火山/商汤大装置/FlagScale",
+      "deps": ["TRN-12"],
+      "objective": "能对 PAI+灵骏/ModelArts/百度百舸/火山/商汤大装置/智源 FlagScale 各说出≥1 个具体差异点。",
+      "socratic_seeds": [
+        "这些平台面对同样的问题，产品决策为什么不同？是用户群差异还是技术路线差异？"
+      ],
+      "grounding_anchors": ["上述各平台官方文档/技术博客（必须联网，见 grounding 协议）"]
+    },
+    {
+      "id": "TRN-14", "track": "training", "bloom": "analyze",
+      "title": "大规模特有问题：千卡训练、故障率、弹性容错、checkpoint 开销、网络瓶颈",
+      "deps": ["TRN-07", "TRN-13"],
+      "objective": "理解千卡训练下故障率、弹性容错、checkpoint 开销、网络瓶颈如何质变。",
+      "socratic_seeds": [
+        "百卡能用的做法到千卡为什么会崩？",
+        "故障率随规模怎么变，平台靠什么扛住？"
+      ],
+      "grounding_anchors": ["大规模训练集群的容错与可靠性工程实践（公开技术博客/论文）"]
+    },
+    {
+      "id": "SCH-01", "track": "scheduling", "bloom": "analyze",
+      "title": "调度平台全景：为何需要、与训推平台的关系、PM 心智模型",
+      "deps": ["TRN-01"],
+      "objective": "说清调度平台为何独立存在、它和训推平台是什么上下层关系。",
+      "socratic_seeds": [
+        "训推平台不是已经能跑任务了吗，为什么还要专门一层调度？它替上层挡掉了什么？"
+      ],
+      "grounding_anchors": ["任一智算平台的分层架构（调度层 vs 训推层）"]
+    },
+    {
+      "id": "SCH-02", "track": "scheduling", "bloom": "understand",
+      "title": "Kubernetes 基础：Pod/编排/声明式/控制器（PM 够用的程度）",
+      "deps": ["SCH-01", "TRN-03"],
+      "objective": "到「PM 够用」的程度看懂 Pod/容器编排/声明式/控制器，知道 K8s 原生调度对 AI 任务为什么不够。",
+      "socratic_seeds": [
+        "K8s 默认调度器是一个一个 Pod 放的，这对一个要 64 张卡同时起的训练任务会出什么问题？"
+      ],
+      "grounding_anchors": ["K8s 默认调度器的工作方式与局限"]
+    },
+    {
+      "id": "SCH-03", "track": "scheduling", "bloom": "analyze",
+      "title": "批调度与 gang scheduling：Volcano/Kueue，为何要成组调度",
+      "deps": ["SCH-02"],
+      "objective": "讲清为什么 AI 训练需要「成组调度」（要么全给要么不给），Volcano/Kueue 解决了什么。",
+      "socratic_seeds": [
+        "64 张卡只凑齐 60 张就先起，会发生什么？gang scheduling 是在防哪种浪费？"
+      ],
+      "grounding_anchors": ["Volcano、Kueue 的批调度设计"]
+    },
+    {
+      "id": "SCH-04", "track": "scheduling", "bloom": "analyze",
+      "title": "GPU 共享：MPS/MIG/时分 vGPU，利用率 vs 隔离的权衡",
+      "deps": ["SCH-02"],
+      "objective": "分清 MPS/MIG/时分 vGPU 三种共享方式，理解「提利用率」和「强隔离」的对立。",
+      "socratic_seeds": [
+        "一张卡切给多个任务用，省了钱，但代价是什么？什么场景宁可不共享？"
+      ],
+      "grounding_anchors": ["NVIDIA MIG/MPS 的隔离粒度差异"]
+    },
+    {
+      "id": "SCH-05", "track": "scheduling", "bloom": "analyze",
+      "title": "资源模型与配额：queue、fair-share、DRF、超分、潮汐",
+      "deps": ["SCH-03"],
+      "objective": "看懂 queue/fair-share/DRF/超分/潮汐，理解「公平」在多资源维度下为什么不简单。",
+      "socratic_seeds": [
+        "A 团队要很多 CPU、B 团队要很多 GPU，怎么算「公平」？DRF 是怎么处理这个的？"
+      ],
+      "grounding_anchors": ["DRF（主导资源公平）论文", "各平台队列与配额设计"]
+    },
+    {
+      "id": "SCH-06", "track": "scheduling", "bloom": "evaluate",
+      "title": "优先级与抢占：preemption、SLA、高低优先级混部",
+      "deps": ["SCH-05"],
+      "objective": "理解 preemption、SLA 保障、高低优先级混部的取舍。",
+      "socratic_seeds": [
+        "高优任务来了要不要踢掉正在跑的低优任务？被踢的任务怎么办，这个代价谁承担？"
+      ],
+      "grounding_anchors": ["K8s/Volcano 抢占机制", "在离线混部实践"]
+    },
+    {
+      "id": "SCH-07", "track": "scheduling", "bloom": "analyze",
+      "title": "拓扑感知：NVLink/IB 拓扑、gang+拓扑、binpacking vs spread",
+      "deps": ["SCH-03"],
+      "objective": "理解为什么调度要看 NVLink/IB 拓扑，gang+拓扑怎么配合，binpacking vs spread 的取舍。",
+      "socratic_seeds": [
+        "同样 8 张卡，放在一台机器里 vs 分散在 8 台，对一个 TP 训练任务的性能差多少？调度该怎么选？"
+      ],
+      "grounding_anchors": ["拓扑感知调度的工业做法"]
+    },
+    {
+      "id": "SCH-08", "track": "scheduling", "bloom": "analyze",
+      "title": "异构算力：多型号 GPU、国产卡(昇腾/海光/沐曦)纳管、CPU/GPU 混合",
+      "deps": ["SCH-04"],
+      "objective": "理解多型号 GPU、国产卡(昇腾/海光/沐曦)统一纳管、CPU/GPU 混合的难点。",
+      "socratic_seeds": [
+        "一个集群里英伟达和昇腾混着，调度器怎么决定任务往哪放？对用户该不该透明？"
+      ],
+      "grounding_anchors": ["国产卡纳管与异构调度的真实方案（联网核实）"]
+    },
+    {
+      "id": "SCH-09", "track": "scheduling", "bloom": "analyze",
+      "title": "利用率优化：MFU/碎片整理/装箱率/潮汐/弹性伸缩",
+      "deps": ["SCH-06", "SCH-07"],
+      "objective": "看懂 MFU/GPU 利用率/碎片整理/装箱率/潮汐/弹性伸缩，理解「利用率」是个多层概念。",
+      "socratic_seeds": [
+        "GPU 利用率 90% 就一定好吗？「卡被占着」和「卡在干活」是一回事吗？MFU 又在测什么？"
+      ],
+      "grounding_anchors": ["业界 GPU 利用率/MFU 的真实水位与提升手段"]
+    },
+    {
+      "id": "SCH-10", "track": "scheduling", "bloom": "analyze",
+      "title": "高性能网络：RDMA/RoCE/IB、参数面/存储面、拓扑对调度的影响",
+      "deps": ["SCH-07"],
+      "objective": "理解 RDMA/RoCE/IB、参数面/存储面网络、网络拓扑如何反过来约束调度。",
+      "socratic_seeds": [
+        "为什么大规模训练绕不开 RDMA？网络成了瓶颈时，调度能帮上什么忙？"
+      ],
+      "grounding_anchors": ["RoCE vs InfiniBand 的工程权衡"]
+    },
+    {
+      "id": "SCH-11", "track": "scheduling", "bloom": "evaluate",
+      "title": "经典调度系统：Borg/Omega、K8s、YARN、Singularity 的设计哲学",
+      "deps": ["SCH-05"],
+      "objective": "理解 Borg/Omega、K8s、YARN、Microsoft Singularity 的设计哲学差异。",
+      "socratic_seeds": [
+        "Borg 用集中式调度、Omega 转共享状态，这个演进是被什么逼出来的？对 AI 调度有什么启示？"
+      ],
+      "grounding_anchors": ["Borg、Omega、Singularity 论文（必读锚点）"]
+    },
+    {
+      "id": "SCH-12", "track": "scheduling", "bloom": "evaluate",
+      "title": "业界对标(调度)：各云厂商调度层 + 开源(Volcano/Ray/Slurm)",
+      "deps": ["SCH-09", "SCH-11"],
+      "objective": "能对各云厂商调度层 + 开源(Volcano/Ray/Slurm)各说出定位与差异点。",
+      "socratic_seeds": [
+        "做 AI 调度，是基于 K8s+Volcano 扩，还是上 Ray、还是沿用 Slurm？各自适合谁？"
+      ],
+      "grounding_anchors": ["Volcano/Ray/Slurm 官方文档 + 各厂商调度层（联网）"]
+    },
+    {
+      "id": "SCH-13", "track": "scheduling", "bloom": "analyze",
+      "title": "调度与训推的接口：调度层如何承接训练任务、PD 分离对调度的要求",
+      "deps": ["SCH-09", "TRN-11"],
+      "objective": "讲清调度层如何承接训练任务、PD 分离等推理新形态对调度提了什么新要求。",
+      "socratic_seeds": [
+        "PD 分离把推理拆成两类异构实例，调度层要为此做什么改变？这是不是又一次「gang」问题？"
+      ],
+      "grounding_anchors": ["PD 分离的调度实践", "推理与训练混合调度的探索"]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "training-infra",
+  "title": "大模型训推平台 + 算力调度平台",
+  "description": "把学习者从「听得懂概念」带到「能做架构级取舍、敢跟研发对线」的训推/调度学习包。原 training-infra-tutor 的内容，零损失迁移并按新框架增补 Bloom 层级与对标锚点。",
+  "learner_profile": "产品经理（PM），做过云管平台 / 可观测平台 / Agent 编排，目标是补齐 AI 基础设施的架构判断力，准备训推/调度方向的岗位；老毛病是表达发散、外部对标空白、被研发一句「实现复杂」唬住。",
+  "goal": "能做架构级取舍、敢跟研发对线，不是会写代码。",
+  "target_depth": "对每个概念：能用大白话讲清「是什么/为解决什么痛点/核心取舍」，能接住连环追问到合理深度，对标业界能说出≥1 个具体差异点。",
+  "assessment_styles": ["concept", "drill", "scenario", "interview"],
+  "socratic_orientation": "提问母题永远拉向产品判断（要不要做、暴露不暴露、取舍的轴、业界为何不同、凭什么判断研发说得对不对），而非技术实现细节。",
+  "grounding": true,
+  "tracks": {
+    "training": "训推平台（TRN）",
+    "scheduling": "算力调度平台（SCH）"
+  },
+  "created": "2026-05-29"
+}
