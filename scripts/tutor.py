@@ -176,10 +176,14 @@ def validate_curriculum(cur):
         b = n.get("bloom")
         if b is not None and b not in BLOOM_LEVELS:
             out.append(("error", f"节点 {nid} 的 bloom 非法：{b!r}（须是 {BLOOM_LEVELS} 之一）"))
-        if not (n.get("objective") or "").strip():
+        obj = (n.get("objective") or "").strip()
+        if not obj:
             out.append(("warn", f"节点 {nid} 的 objective 为空（学到什么程度说不清，测验无从验收）"))
-        if not (n.get("socratic_seeds") or []):
-            out.append(("warn", f"节点 {nid} 没有 socratic_seeds（缺引导追问的种子问题）"))
+        elif len(obj) < 25:
+            out.append(("warn", f"节点 {nid} 的 objective 过短（{len(obj)}字，疑似敷衍/占位）"))
+        seeds = n.get("socratic_seeds") or []
+        if len(seeds) < 2:
+            out.append(("warn", f"节点 {nid} 的 socratic_seeds 只有 {len(seeds)} 个（建议≥2，连环追问才够用）"))
     seen, dups = set(), set()
     for nid in ids:
         if nid in seen:
@@ -841,6 +845,43 @@ def cmd_validate(args):
         sys.exit(1)
 
 
+def cmd_audit(args):
+    """深度体检：量每个节点的厚度，揪出明显比同伴单薄的『敷衍嫌疑』节点，并看前后段深度是否塌。
+    专治"越往后越敷衍"——给建包流程一个确定性的 loop 依据。"""
+    pids = list_installed() if args.all else [resolve_pack(args.pack)]
+    for pid in pids:
+        cur = peek_curriculum(pid)
+        if cur is None:
+            print(f"[{pid}] 课程缺失/损坏")
+            continue
+        nodes = cur["nodes"]
+        if not nodes:
+            print(f"[{pid}] 空课程")
+            continue
+        rows = []
+        for n in nodes:
+            objl = len((n.get("objective") or "").strip())
+            rows.append((n.get("id"), objl, len(n.get("socratic_seeds") or []),
+                         len(n.get("grounding_anchors") or [])))
+        objs = sorted(r[1] for r in rows)
+        median = objs[len(objs) // 2]
+        half = len(rows) // 2 or 1
+        avg = lambda xs: round(sum(xs) / len(xs)) if xs else 0
+        fh = avg([r[1] for r in rows[:half]])
+        lh = avg([r[1] for r in rows[half:]])
+        sag = (fh and lh < fh * 0.7)
+        head = (f"  ⚠️ 后半段比前半段薄 {round((fh - lh) / fh * 100) if fh else 0}%（典型『越往后越敷衍』）"
+                if sag else "  ✅ 前后段深度均匀")
+        print(f"[{pid}] {len(rows)} 节点 | objective 字数：中位 {median}，前半均 {fh}，后半均 {lh}{head}")
+        thin = [r for r in rows if r[1] < max(20, median * 0.5) or r[2] < 2 or r[3] == 0]
+        if thin:
+            print(f"  敷衍嫌疑 {len(thin)} 个（objective 过短 / 种子<2 / 无对标锚点）：")
+            for rid, ol, ns, na in thin:
+                print(f"    · {rid}  objective {ol}字  种子 {ns}  对标 {na}")
+        else:
+            print("  ✅ 没有明显单薄的节点")
+
+
 def cmd_skip_summary(args):
     """放弃某个/全部待补的当日小结，把永久 nag 清掉（不写小结也能脱困）。"""
     pid = resolve_pack(args.pack)
@@ -933,6 +974,7 @@ def main():
     s = sub.add_parser("review"); add_pack_arg(s); s.add_argument("--all", action="store_true"); s.set_defaults(fn=cmd_review)
     s = sub.add_parser("progress"); add_pack_arg(s); s.add_argument("--all", action="store_true"); s.set_defaults(fn=cmd_progress)
     s = sub.add_parser("validate"); add_pack_arg(s); s.add_argument("--all", action="store_true"); s.set_defaults(fn=cmd_validate)
+    s = sub.add_parser("audit"); add_pack_arg(s); s.add_argument("--all", action="store_true"); s.set_defaults(fn=cmd_audit)
     s = sub.add_parser("skip-summary"); add_pack_arg(s)
     s.add_argument("date", nargs="?"); s.add_argument("--all", action="store_true"); s.set_defaults(fn=cmd_skip_summary)
 

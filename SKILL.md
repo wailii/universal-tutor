@@ -81,8 +81,11 @@ python scripts/tutor.py master <节点ID> <1-5> --confidence <low|med|high> --bl
 | `boot` | 开场校准：包/跨天/到期复习/误概念/校准/可学/进度 |
 | `log <id>`（stdin 正文） | 实时落盘到 `logs/<pack>/当天.md` |
 | `master <id> <1-5> [--confidence] [--bloom]` | 测验后更新掌握 + 重排复习 |
-| `review [--all]` | 列到期复习（本包/所有包） |
+| `review [--all]` | 列到期复习 + 需重学（本包/所有包） |
 | `progress [--pack id] [--all]` | 进度条 |
+| `validate [--pack id] [--all]` | 课程结构+质量校验（成环/悬空/重复/bloom非法/空目标/种子<2） |
+| `audit [--pack id] [--all]` | 深度体检：揪『敷衍嫌疑』节点、看前后段深度是否塌（建包必跑） |
+| `skip-summary [date] [--all]` | 放弃待补的当日小结，清掉 nag |
 | `miss add <id>`（stdin）/`list`/`retest <Mx>`/`resolve <Mx>` | 误概念账本闭环 |
 
 ★=已掌握 ✓=已学 …=学习中 ○=可学 ·=锁定。
