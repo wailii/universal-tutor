@@ -1,12 +1,12 @@
 # 安装
 
 > 「一句话/一条命令就装好、还不用事先拿到包」的前提是：**包先托管在 Agent 够得到的公开位置**（GitHub）。
-> 下面前两种是托管后的真·一键；第三种是离线自带包。把所有 `<OWNER>` 换成你的 GitHub 用户名。
+> 下面前两种是托管后的真·一键（仓库 `wailii/universal-tutor`，需先推到公开 GitHub）；第三种是离线自带包。
 
 ## 方式 A：一条命令（curl，跨任意带 shell 的 Agent / 自己跑）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<OWNER>/universal-tutor/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wailii/universal-tutor/main/install.sh | bash
 ```
 
 自动探测 skills 目录（Claude Code `~/.claude/skills/`、Codex `~/.codex/skills/`，否则当前目录）→ git clone/下载 → init → boot 自检。指定目录加 `INSTALL_DIR=/路径`。
@@ -16,14 +16,14 @@ curl -fsSL https://raw.githubusercontent.com/<OWNER>/universal-tutor/main/instal
 仓库已带 `.claude-plugin/{plugin.json,marketplace.json}`，推到公开 GitHub 后：
 
 ```
-/plugin marketplace add <OWNER>/universal-tutor
+/plugin marketplace add wailii/universal-tutor
 /plugin install universal-tutor@universal-tutor-mkt
 ```
 
 ## 方式 C：一句提示词（发给任意 Agent，无需你手动敲命令）
 
 ```
-帮我安装 universal-tutor 学习 skill：把 https://github.com/<OWNER>/universal-tutor
+帮我安装 universal-tutor 学习 skill：把 https://github.com/wailii/universal-tutor
 clone 到我的 skills 目录（Claude Code 用 ~/.claude/skills/，Codex 用 ~/.codex/skills/），
 然后 cd 进去跑 python3 scripts/tutor.py init && boot 确认能用，
 装好后告诉我有哪些内置课、怎么开始学、怎么让你给我现场新建一门课。

@@ -2,7 +2,7 @@
   "name": "universal-tutor",
   "version": "1.0.0",
   "description": "通用苏格拉底式·可持久化·热插拔多学科学习导师：把任何学科从「听得懂」带到「能做判断、扛得住追问」。装好后选想学什么（一门或多门），没有现成课就现场联网建一门。",
-  "author": { "name": "<在这里填你的名字或 GitHub 用户名>" },
-  "homepage": "https://github.com/<OWNER>/universal-tutor",
+  "author": { "name": "wailii" },
+  "homepage": "https://github.com/wailii/universal-tutor",
   "keywords": ["learning", "tutor", "socratic", "spaced-repetition", "education"]
 }

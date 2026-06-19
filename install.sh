@@ -2,14 +2,14 @@
 # universal-tutor 在线安装器 —— 从 GitHub 拉取并装进你的 skills 目录。用户无需事先持有任何包。
 #
 #   一条命令（推荐）：
-#     curl -fsSL https://raw.githubusercontent.com/<OWNER>/universal-tutor/main/install.sh | bash
+#     curl -fsSL https://raw.githubusercontent.com/wailii/universal-tutor/main/install.sh | bash
 #
 #   指定装到哪：   INSTALL_DIR=/你的/skills目录 bash <(curl -fsSL .../install.sh)
 #   换仓库/分支：  UT_REPO=https://github.com/you/universal-tutor UT_BRANCH=main bash install.sh
 #
-# ⚠️ 把上面的 <OWNER> 改成你的 GitHub 用户名后再用（推到公开仓库才可达）。
+# 仓库默认 wailii/universal-tutor（公开仓库才可达）；换人用 UT_REPO 覆盖。
 set -e
-REPO="${UT_REPO:-https://github.com/<OWNER>/universal-tutor}"
+REPO="${UT_REPO:-https://github.com/wailii/universal-tutor}"
 BRANCH="${UT_BRANCH:-main}"
 
 if [ -n "${INSTALL_DIR:-}" ]; then

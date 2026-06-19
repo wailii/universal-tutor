@@ -47,13 +47,13 @@ universal-tutor/
 
 ## 安装
 
-详见 `INSTALL.md`。最快的一条命令（先把 `<OWNER>` 换成你的 GitHub 用户名、推到公开仓库）：
+详见 `INSTALL.md`。最快的一条命令（仓库 `wailii/universal-tutor`，需先推到公开 GitHub）：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<OWNER>/universal-tutor/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/wailii/universal-tutor/main/install.sh | bash
 ```
 
-Claude Code 也可用原生插件：`/plugin marketplace add <OWNER>/universal-tutor` 再 `/plugin install universal-tutor@universal-tutor-mkt`。没有 GitHub 就用离线自解压器 `universal-tutor-offline-installer.sh`。
+Claude Code 也可用原生插件：`/plugin marketplace add wailii/universal-tutor` 再 `/plugin install universal-tutor@universal-tutor-mkt`。没有 GitHub 就用离线自解压器 `universal-tutor-offline-installer.sh`。
 
 装好后首次：
 ```bash
